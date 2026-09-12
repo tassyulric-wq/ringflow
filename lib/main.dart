@@ -1,54 +1,86 @@
 import 'package:flutter/material.dart';
-import 'package:ringflow/pages/home.dart';
+import 'views/home_view.dart';
+import 'views/alarms_view.dart';
+import 'views/test_view.dart';
+import 'views/settings_view.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const RingflowApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class RingflowApp extends StatelessWidget {
+  const RingflowApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const MyHomePage(title: ''),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {'/home': (context) => const HomePage()},
+      title: 'RingFlow',
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF0D1117),
+        primaryColor: Colors.blueAccent,
+        colorScheme: const ColorScheme.dark(
+          primary: Colors.blueAccent,
+          secondary: Colors.cyanAccent,
+          surface: Color(0xFF161B22),
+        ),
+      ),
+      home: const MainNavigationScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class MainNavigationScreen extends StatefulWidget {
+  const MainNavigationScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  int _currentIndex = 0;
+
+  final List<Widget> _screens = const [
+    HomeView(),
+    AlarmsView(),
+    TestView(),
+    SettingsView(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/home');
-              },
-              child: const Text('Go to Home Page'),
-            ),
-          ],
-        ),
+      body: _screens[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: const Color(0xFF161B22),
+        selectedItemColor: Colors.blueAccent,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Accueil',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.access_alarm_outlined),
+            activeIcon: Icon(Icons.access_alarm),
+            label: 'Alarmes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.play_circle_outline),
+            activeIcon: Icon(Icons.play_circle),
+            label: 'Test',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_outlined),
+            activeIcon: Icon(Icons.settings),
+            label: 'Paramètres',
+          ),
+        ],
       ),
     );
   }
